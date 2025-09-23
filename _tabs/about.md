@@ -29,7 +29,7 @@ Computer Science student focused on **SOC operations, Digital Forensics & Incide
 - Threat Intelligence  
 - Network Forensics  
 - SIEM (Wazuh, ELK, Splunk)  
-- IPS / IDS / Firewall (pfSense), EDR  
+- IPS / IDS / Firewall (pfSense), EDR
 - Security Operations  
 ---
 
@@ -41,7 +41,7 @@ Computer Science student focused on **SOC operations, Digital Forensics & Incide
 
 ---
 
-## ⚡ Languages and Tools
+##  Languages and Tools
 
 <div align="center">
 
