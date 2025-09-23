@@ -13,19 +13,13 @@ order: 4
 
 ## About Me  
 
-I am a SOC Analyst focusing on **threat detection, incident response, and digital forensics**.  
-I help organizations strengthen their defenses by monitoring security events, analyzing incidents, and responding effectively to cyber threats.  
+Computer Science student focused on **SOC operations, Digital Forensics & Incident Response (DFIR), and Threat Intelligence**. Experienced in log analysis, incident detection, and response using SIEM tools, with strong skills in investigating security events and identifying Indicators of Compromise (IoCs). Passionate about threat hunting, forensic analysis, and developing proactive defense strategies to enhance organizational security.
 
 ---
 
 ## Education  
 - **B.Sc. in Computer Science & Mathematics**, Menoufia University (Expected 2026)  
 
----
-
-## Experience  
-- **Information Security Analyst Trainee** – Digital Egypt Pioneers Initiative (DEPI) (Jul 2025 – Present)  
-  Practical exposure to SOC operations, incident monitoring & response, threat analysis, and vulnerability management.  
 
 ---
 
@@ -37,14 +31,6 @@ I help organizations strengthen their defenses by monitoring security events, an
 - SIEM (Wazuh, ELK, Splunk)  
 - IPS / IDS / Firewall (pfSense), EDR  
 - Security Operations  
-
-### Soft Skills  
-- Problem-Solving  
-- Team Collaboration  
-- Analytical Thinking  
-- Effective Communication  
-- Adaptability  
-
 ---
 
 ## Personal Information  
@@ -55,16 +41,18 @@ I help organizations strengthen their defenses by monitoring security events, an
 
 ---
 
-## ⚡ Languages and Tools  
+## ⚡ Languages and Tools
 
-<p align="center">
-  <span style="background:#2d2d2d; color:white; padding:6px 12px; margin:4px; border-radius:6px;">C#</span>
-  <span style="background:#2d2d2d; color:white; padding:6px 12px; margin:4px; border-radius:6px;">Python</span>
-  <span style="background:#2d2d2d; color:white; padding:6px 12px; margin:4px; border-radius:6px;">Bash Script</span>
-  <span style="background:#2d2d2d; color:white; padding:6px 12px; margin:4px; border-radius:6px;">Kali Linux</span>
-  <span style="background:#2d2d2d; color:white; padding:6px 12px; margin:4px; border-radius:6px;">Wazuh</span>
-  <span style="background:#2d2d2d; color:white; padding:6px 12px; margin:4px; border-radius:6px;">Suricata</span>
-  <span style="background:#2d2d2d; color:white; padding:6px 12px; margin:4px; border-radius:6px;">Zeek (Zui)</span>
-  <span style="background:#2d2d2d; color:white; padding:6px 12px; margin:4px; border-radius:6px;">Network Miner</span>
-  <span style="background:#2d2d2d; color:white; padding:6px 12px; margin:4px; border-radius:6px;">Wireshark</span>
-</p>
+<div align="center">
+
+  <a href="#"><img src="https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white" alt="C#"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white" alt="Bash"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Kali%20Linux-557C94?style=for-the-badge&logo=kali-linux&logoColor=white" alt="Kali Linux"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Wazuh-0052CC?style=for-the-badge&logoColor=white" alt="Wazuh"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Suricata-E34F26?style=for-the-badge&logoColor=white" alt="Suricata"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Zeek-000000?style=for-the-badge&logoColor=white" alt="Zeek (Zui)"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Network%20Miner-2D8CFF?style=for-the-badge&logoColor=white" alt="Network Miner"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Wireshark-1679A7?style=for-the-badge&logo=wireshark&logoColor=white" alt="Wireshark"/></a>
+
+</div>
