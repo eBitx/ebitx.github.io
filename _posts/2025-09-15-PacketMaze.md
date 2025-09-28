@@ -11,7 +11,12 @@ tags: [lab, network-forensics]
 ## Scenario
 A company's internal server has been flagged for unusual network activity, with multiple outbound connections to an unknown external IP. Initial analysis suggests possible data exfiltration. Investigate the provided network logs to determine the source and method of compromise.
 ---
-
+---
+## link of the challenge : 
+```
+https://cyberdefenders.org/blueteam-ctf-challenges/packetmaze/
+```
+---
 ## important Note
  This lab does not include any malicious software The goal is entirely educational just as the name PacketMaze implies It’s about navigating through network packets learning to capture and analyze them with Wireshark, and gaining familiarity with various network protocols **(such as IP, TCP/UDP, and a few less common ones introduced in the exercise)** The focus is on improving packet analysis skills and protocol understanding, not on handling real malware.
 ---
