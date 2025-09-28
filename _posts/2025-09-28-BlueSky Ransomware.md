@@ -25,7 +25,7 @@ Using the Statistics → Conversations and Statistics → Endpoints views I revi
 This first pass provided a clear picture of who was talking to whom and the relative volume of each conversation helping to highlight the most active or potentially suspicious hosts before moving into deeper packet level analysis.
 ---
 One of the first notable observations from the Wireshark statistics is a highly asymmetric conversation between **87.96.21.81** and **87.96.21.84** where **87.96.21.81** is the predominant sender.
-Using Statistics → Conversations I found that 87.96.21.81 transmitted approximately 4750 packets to 87.96.21.84 making this flow one of the most active in the capture and therefore a prime candidate for further investigation.
+Using Statistics → Conversations I found that 87.96.21.84 transmitted approximately 4750 packets to 87.96.21.81 making this flow one of the most active in the capture and therefore a prime candidate for further investigation.
 
 ![PCAP Evidence](assets/lib/BlueSky/1.jpg)
 
