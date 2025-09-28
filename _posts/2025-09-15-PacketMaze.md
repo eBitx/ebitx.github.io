@@ -47,7 +47,7 @@ fe80::c80b:adff:feaa:1db7
 ---
 ## Q3 ) What domain is the user looking up in packet 15174?
 
-![PCAP Evidence](assets/lib/PacketMaze/p3.jpg)
+![PCAP Evidence](assets/lib/PacketMaze/P3.jpg)
 
 The Answer is :
 ```
@@ -133,7 +133,7 @@ I applied the filter:
 ```
 tls.record.content_type == 22 && tls.handshake.extensions_server_name == "protonmail.com"
 ```
-![PCAP Evidence](assets/lib/PacketMaze/p10.jpg)
+![PCAP Evidence](assets/lib/PacketMaze/P10.jpg)
 
 This displays all TLS handshake packets where the Server Name Indication (SNI) is protonmail.com.
 I located the initial Client Hello packet and, inside the Handshake Protocol: Client Hello section, found the Client Random value.
