@@ -36,7 +36,7 @@ Computer Science student focused on **SOC operations, Digital Forensics & Incide
 ## Personal Information  
 - [LinkedIn](https://www.linkedin.com/in/ebrahimezzat/)  
 - [GitHub](https://github.com/eBitx)  
-- [Ebrahim CV](https://drive.google.com/file/d/1df4xdHkgpyoeb024EGEzNwxZNo51v-_P/view?usp=sharing)  
+- [Ebrahim CV](https://drive.google.com/file/d/10b4ooyaSYGaavhO_DQKyVGn1fmRRKe2w/view?usp=sharing)  
 - [Cyber Defenders](https://cyberdefenders.org/p/vbrvhim)  
 
 ---
