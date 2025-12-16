@@ -39,7 +39,7 @@ social:
     - https://github.com/eBitx
     - https://www.facebook.com/ebit1x
 
-     
+favicon: /assets/img/ingsoc.png # path to your favicon, local or CORS resources     
 
 # Site Verification Settings
 webmaster_verifications:
