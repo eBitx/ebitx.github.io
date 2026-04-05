@@ -7,9 +7,9 @@ tags: [soc, wazuh, pfsense, snort, detection-engineering, homelab]
 
 ## Why I Built This Environment
 
-I built this mini SOC lab to train in an environment that feels closer to a real security operations workflow than a random collection of virtual machines. The goal was not to deploy tools for the sake of installation, but to understand how segmentation, telemetry collection, log forwarding, and centralized visibility behave when they are wired together as one monitored system.
+The real test of a SOC environment is not whether the tools install successfully. It is whether telemetry moves through the architecture cleanly enough to support investigation, parsing, and later detection logic. That was the problem this environment was built to solve.
 
-From the beginning, the objective was practical SOC engineering: generate events on isolated hosts, move those events through a control plane, and validate that they become useful telemetry inside a SIEM. That is a very different exercise from spinning up a few VMs and calling it a lab.
+I built this mini SOC lab to train in an environment that behaves closer to a real security operations workflow than a random collection of virtual machines. The goal was not to deploy tools for the sake of installation, but to understand how segmentation, telemetry collection, log forwarding, and centralized visibility behave when they are wired together as one monitored system.
 
 ![Mini SOC topology](/assets/lib/post1/post1-hero.png)
 
@@ -129,9 +129,9 @@ Before going deeper into deployment, it helps to make the ingest design explicit
 | Source | Telemetry type | Collection method | Transport | Destination | Expected operational result |
 | --- | --- | --- | --- | --- | --- |
 | `pfSense` | system, firewall, DHCP, package events | remote syslog forwarding | `UDP/514` | Wazuh manager `40.40.40.5` | gateway-side activity becomes searchable in Wazuh |
-| `Snort on pfSense` | NIDS alerts written into pfSense logging path | pfSense package logging + syslog forwarding | `UDP/514` via pfSense | Wazuh manager `40.40.40.5` | IDS observations share the same analysis plane as firewall telemetry |
+| `Snort on pfSense` | NIDS alerts written into pfSense logging path | pfSense package logging + syslog forwarding | `UDP/514` via pfSense | Wazuh manager `40.40.40.5` | IDS observations reach the same analysis plane as firewall telemetry; field-level parser validation comes next |
 | `DESKTOP-35FAQ07` | baseline Windows endpoint telemetry | Wazuh agent | secure `TCP/1514` | Wazuh manager `40.40.40.5` | host enrollment and Windows event visibility are confirmed |
-| `dvwa` | baseline Linux host telemetry | Wazuh agent | secure `TCP/1514` | Wazuh manager `40.40.40.5` | Linux endpoint enrollment and host visibility are confirmed |
+| `dvwa` | baseline Linux host telemetry | Wazuh agent | secure `TCP/1514` | Wazuh manager `40.40.40.5` | Linux endpoint enrollment and host visibility are confirmed; Apache/application log onboarding is deferred |
 | `Wazuh authd` | agent registration traffic | Wazuh enrollment service | `TCP/1515` | Wazuh manager `40.40.40.5` | endpoints can register without manual key exchange |
 
 In other words, this phase validates two parallel ingest paths:
@@ -140,6 +140,19 @@ In other words, this phase validates two parallel ingest paths:
 - host telemetry enters through Wazuh agent enrollment and secure transport
 
 That split is operationally important because it defines where parsing and troubleshooting should happen later. If a firewall event is missing, the syslog path is suspect. If a host event is missing, the agent channel or endpoint configuration is suspect.
+
+## Phase-1 Source Coverage
+
+This first stage validates transport and baseline visibility, not full source expansion.
+
+- `pfSense` forwarding is in scope in this phase
+- `Snort` alert transport through the pfSense logging path is in scope in this phase
+- Windows baseline event visibility through the Wazuh agent is in scope in this phase
+- Linux baseline host visibility through the Wazuh agent is in scope in this phase
+- Apache access/error log onboarding on the DVWA host is intentionally deferred
+- expanded Windows channels such as `Sysmon` and `PowerShell Operational` are intentionally deferred
+
+That distinction matters because a connected endpoint is not automatically a fully onboarded endpoint. Phase 1 proves enrollment and transport. Deeper source coverage comes after the ingest paths are stable enough to trust.
 
 ## Network Design and Traffic Logic
 
@@ -434,6 +447,8 @@ At the Linux endpoint itself, I kept the proof chain simple: the package was pre
 
 Because this host also ran the DVWA web stack, it is easy to blur host enrollment with application log onboarding. I kept those as two different concerns. The agent installation itself only needed the secure manager connection to work. If Apache access or error logs are added later, that happens through extra `localfile` entries in `/var/ossec/etc/ossec.conf` and should be validated separately with application-log evidence inside Wazuh.
 
+That means the DVWA host is already a valid Linux telemetry source in this post, but not yet a fully onboarded web telemetry source. From a SOC perspective, that is an intentional scope boundary rather than an omission by accident.
+
 ### Setup proof vs. detection proof
 
 This distinction matters for the rest of the series:
@@ -468,6 +483,10 @@ On the Wazuh manager, I enabled a dedicated syslog listener for pfSense:
 That `allowed-ips` value matters because it pins the syslog source to the pfSense SIEM-facing interface and avoids turning the manager into a generic UDP collector for the whole lab.
 
 ![Wazuh remote syslog and secure channel snippet](/assets/lib/post1/wazuh-manager-config-remote-crop.png)
+
+Transport alone is not the full acceptance criterion, though. For pfSense telemetry to become useful in later detection work, the next engineering check is parser readiness: representative pfSense messages need to be inspected in Wazuh to confirm that timestamps, source program names, interface information, actions, and source/destination fields are extracted in a way that rules can consume consistently.
+
+The same logic applies to Snort. In this phase, I validated that Snort was attached at the gateway and that its alerts could enter the pfSense logging path. The stronger next-phase check is to confirm that a Snort event lands in Wazuh in a parseable form with fields such as signature, classification or priority, source IP, destination IP, and interface context. That parser-level verification belongs directly before custom decoders and correlation rules, not after them.
 
 ### Agents to manager
 
@@ -505,6 +524,8 @@ The most useful integration check was not just reading a dashboard tile. I manua
 ![pfSense log delivery proof](/assets/lib/post1/pfsense-log-delivery-proof.jpeg)
 
 That kind of validation is far more useful than assuming the path works because configuration screens look correct.
+
+For Snort specifically, the operational claim in this post is limited to gateway-side deployment and transport-path readiness. The environment was exercised with attack traffic from Kali, but a preserved field-level Snort-in-Wazuh validation artifact is intentionally left for the decoder and rule-focused stages, where parser correctness matters more than deployment state alone.
 
 ## Problems and Challenges
 
@@ -555,6 +576,17 @@ TimeoutSec=120
 
 That gave the dependent services enough time to come up in the right order and stabilized the API check path.
 
+To validate that this is the actual failure mode and not a generic API issue, the checks that matter are:
+
+```bash
+systemctl status wazuh-manager
+systemctl status wazuh-indexer
+journalctl -u wazuh-manager -b
+journalctl -u wazuh-indexer -b
+```
+
+What I would expect to see in that condition is a manager-side startup delay while the indexer is still becoming healthy, followed by the dashboard surfacing the API failure before the backend services have converged fully. In other words, the fix is not just "raise the timeout"; the fix is "confirm backend startup order, then raise the timeout if the dependency chain is correct but too slow for the default service window."
+
 This was a good example of why troubleshooting in a SOC stack often requires thinking about service dependency timing, not just application logs.
 
 ## Validation: Proving the Environment Worked
@@ -586,6 +618,18 @@ That mattered because the environment now had host coverage from both sides of t
 
 At the same time, forwarded firewall telemetry was arriving on the manager, including manually generated test entries used to confirm the syslog path.
 
+What this validation proves strongly:
+
+- endpoint enrollment and secure transport are working
+- pfSense syslog forwarding is working
+- the SIEM plane is receiving enough host and gateway data to move into parsing and rule work
+
+What this validation does **not** yet claim:
+
+- final parser quality for pfSense events
+- field-level Snort alert extraction inside Wazuh
+- Apache web log onboarding from the DVWA host
+
 Together, those checks gave me confidence that the environment was no longer just deployed. It was operational.
 
 Each of the three original success criteria closed cleanly:
@@ -606,6 +650,7 @@ The environment is intentionally useful before it is elegant. At the end of phas
 - no alias abstraction has been introduced yet in the firewall policy
 - duplicate firewall events are not fully normalized or deduplicated downstream
 - advanced endpoint source onboarding is deferred until after baseline enrollment and transport are stable
+- field-level parser validation for pfSense and Snort is still pending the decoder/rule-focused phase
 
 I consider that acceptable debt for this stage because the environment is now reliable enough to support the next posts, where parsing, decoders, rules, and correlation matter more than raw installation progress.
 
