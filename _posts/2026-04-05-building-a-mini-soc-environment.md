@@ -15,6 +15,12 @@ From the beginning, the objective was practical SOC engineering: generate events
 
 *The lab was designed around three isolated segments, with pfSense acting as the control plane and Wazuh serving as the analysis layer.*
 
+The phase-1 success criteria for this environment were deliberately narrow:
+
+1. enroll both monitored endpoints successfully into Wazuh
+2. ingest firewall and gateway telemetry from pfSense into the SIEM plane
+3. confirm that IDS and host telemetry are visible enough to support later detection engineering
+
 ## What This Series Starts With
 
 This first post focuses on the foundation of the environment:
@@ -57,6 +63,8 @@ In this design, segmentation is not cosmetic. It exists to make traffic paths pr
 
 I intentionally treated the attacker as an internal hostile node instead of an internet-only source. That makes the environment much more useful for validating east-west visibility, firewall behavior, and attack traces that often matter in real internal investigations.
 
+At a telemetry-path level, the model is simple and intentional: north-south and east-west traffic crosses pfSense, Snort inspects at the gateway, pfSense forwards network telemetry through syslog, endpoints forward host telemetry through the Wazuh agent channel, and Wazuh becomes the convergence point where those streams can be searched together.
+
 ![VMware segmented networks](/assets/lib/post1/vmware-siem-network.png)
 ![VMware segmented networks](/assets/lib/post1/vmware-victims-network.png)
 ![VMware segmented networks](/assets/lib/post1/vmware-attacker-network.png)
@@ -80,6 +88,19 @@ At the hypervisor layer, pfSense was attached to four adapters:
 
 That NIC layout made pfSense the single routing and enforcement point for the whole environment.
 
+## Design Constraints
+
+This environment uses an all-in-one Wazuh deployment by design. For a lab-first phase, consolidating the manager, indexer, and dashboard on one Ubuntu node reduces deployment friction and keeps the architecture small enough to reason about while the telemetry paths are still being validated.
+
+That simplification is intentional, not an implicit production recommendation. In practical terms, it comes with clear trade-offs:
+
+- the SIEM node is a single point of failure in this phase
+- horizontal scaling and cluster behavior are intentionally deferred
+- performance tuning is not the priority yet; telemetry correctness is
+- operational realism is focused on ingest and segmentation rather than on high availability
+
+This is the right trade in phase 1 because the goal is to prove data movement and source onboarding first. Scale, resilience, and cluster complexity only become worth paying for once the basic ingest design is already correct.
+
 ## Core Components
 
 The environment is intentionally small, but each node has a precise job:
@@ -101,6 +122,25 @@ Operationally, Snort was deployed as a pfSense package rather than being treated
 
 ![pfSense package manager](/assets/lib/post1/pfsense-package-manager.jpeg)
 
+## Telemetry Matrix
+
+Before going deeper into deployment, it helps to make the ingest design explicit. This is the telemetry model the lab was built around in phase 1:
+
+| Source | Telemetry type | Collection method | Transport | Destination | Expected operational result |
+| --- | --- | --- | --- | --- | --- |
+| `pfSense` | system, firewall, DHCP, package events | remote syslog forwarding | `UDP/514` | Wazuh manager `40.40.40.5` | gateway-side activity becomes searchable in Wazuh |
+| `Snort on pfSense` | NIDS alerts written into pfSense logging path | pfSense package logging + syslog forwarding | `UDP/514` via pfSense | Wazuh manager `40.40.40.5` | IDS observations share the same analysis plane as firewall telemetry |
+| `DESKTOP-35FAQ07` | baseline Windows endpoint telemetry | Wazuh agent | secure `TCP/1514` | Wazuh manager `40.40.40.5` | host enrollment and Windows event visibility are confirmed |
+| `dvwa` | baseline Linux host telemetry | Wazuh agent | secure `TCP/1514` | Wazuh manager `40.40.40.5` | Linux endpoint enrollment and host visibility are confirmed |
+| `Wazuh authd` | agent registration traffic | Wazuh enrollment service | `TCP/1515` | Wazuh manager `40.40.40.5` | endpoints can register without manual key exchange |
+
+In other words, this phase validates two parallel ingest paths:
+
+- network telemetry enters through pfSense syslog forwarding
+- host telemetry enters through Wazuh agent enrollment and secure transport
+
+That split is operationally important because it defines where parsing and troubleshooting should happen later. If a firewall event is missing, the syslog path is suspect. If a host event is missing, the agent channel or endpoint configuration is suspect.
+
 ## Network Design and Traffic Logic
 
 The traffic policy was designed to support testing without collapsing the isolation model.
@@ -113,6 +153,15 @@ The traffic policy was designed to support testing without collapsing the isolat
 - `Attacker -> SIEM`: blocked
 
 That last rule is the important boundary. I wanted the attacker segment to generate traffic freely against monitored systems, but I did not want direct reachability into the SIEM plane.
+
+From a hardening perspective, the SIEM plane was treated as a protected management segment even in a lab context. The most important control was the explicit block from `Attacker -> SIEM`, but the security posture of the management surface is worth calling out directly:
+
+- the dashboard and manager services live on the SIEM subnet rather than the victim or attacker segments
+- the SIEM-facing rules were kept narrow enough to support management and ingest, not arbitrary attacker reachability
+- `UDP/514` was used for pfSense syslog in this phase as a lab simplification to keep forwarding simple and compatible with the gateway workflow
+- secure endpoint telemetry still used the Wazuh agent channel over `TCP/1514`, so host-side ingest was not downgraded to plaintext syslog
+
+If this were being hardened toward production, the next discussion would be transport integrity for syslog, tighter source scoping, management-access minimization, and stronger separation between operational administration and telemetry ingestion. For phase 1, the focus stayed on proving the ingest path with the fewest moving parts possible.
 
 From an engineering perspective, the communication paths that mattered most were:
 
@@ -246,11 +295,15 @@ The practical Snort deployment workflow was:
 
 That kept inspection aligned with the gateway instead of scattering network visibility across hosts.
 
+This section is intentionally an engineering walkthrough, not a full rebuild runbook. The exact runbook flavor still exists in the original project documentation through the installation resources, package paths, DHCP ranges, and procedural steps. Here, I am biasing toward design intent and operational reasoning rather than reproducing every installer click exactly as a checklist.
+
 ## Agent Installation and Enrollment
 
 Once the network and central platform were stable, the next step was turning the endpoints into trusted telemetry sources for the manager at `40.40.40.5`.
 
 This is worth separating from later detection engineering. Agent installation is the setup phase: establish trust, register the endpoint, and confirm that events can move over the secure channel. Tuning extra sources such as `Sysmon`, `PowerShell Operational`, or Apache access logs comes after that baseline connection already works.
+
+At this stage, host enrollment was validated, but advanced source onboarding was intentionally deferred. That means the phase-1 objective was to prove that Windows and Linux endpoints could register, connect, and send baseline telemetry. Additional coverage such as expanded Windows channels or application-specific Linux log onboarding belongs to the next layer of ingest work rather than to the first connectivity milestone.
 
 ### Enrollment model used in this lab
 
@@ -534,6 +587,27 @@ That mattered because the environment now had host coverage from both sides of t
 At the same time, forwarded firewall telemetry was arriving on the manager, including manually generated test entries used to confirm the syslog path.
 
 Together, those checks gave me confidence that the environment was no longer just deployed. It was operational.
+
+Each of the three original success criteria closed cleanly:
+
+1. endpoint enrollment succeeded on both Windows and Linux
+2. pfSense telemetry reached Wazuh over the expected syslog path
+3. the combined host and gateway data was visible enough to support the next phase of parser and rule work
+
+That matters because "services are running" is not the same as "the SOC environment is usable." The environment only became operational once those three statements were true at the same time.
+
+## Known Limitations in This Phase
+
+The environment is intentionally useful before it is elegant. At the end of phase 1, the known technical debt looked like this:
+
+- Wazuh is still deployed as an all-in-one node
+- victim-side rules remain permissive enough to favor integration speed over least privilege
+- pfSense syslog uses `UDP/514`, which is simple and effective for the lab but not the strongest transport posture
+- no alias abstraction has been introduced yet in the firewall policy
+- duplicate firewall events are not fully normalized or deduplicated downstream
+- advanced endpoint source onboarding is deferred until after baseline enrollment and transport are stable
+
+I consider that acceptable debt for this stage because the environment is now reliable enough to support the next posts, where parsing, decoders, rules, and correlation matter more than raw installation progress.
 
 ## Closing Thoughts
 
