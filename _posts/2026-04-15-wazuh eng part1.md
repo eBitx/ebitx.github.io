@@ -759,6 +759,59 @@ as the environment grows in scale and complexity.
 ---
 ---
 
+## 5.5 Event Volume (EPS) and Scaling Considerations
+
+One of the most important factors when designing a Wazuh deployment is the event rate, measured as Events Per Second (EPS).
+
+EPS represents how many events your environment generates and sends to the Wazuh Manager every second.
+
+---
+
+### Why EPS Matters
+
+As EPS increases:
+
+- CPU usage on the Manager increases (analysisd)  
+- Disk I/O pressure increases on the Indexer  
+- Memory usage grows due to buffering and processing queues  
+
+---
+
+### Practical Guidelines
+
+While exact limits depend on hardware and tuning, general observations are:
+
+- < 100 EPS → All-in-One deployment is usually sufficient  
+- 100–1000 EPS → Distributed deployment recommended  
+- > 1000 EPS → Cluster deployment required  
+
+---
+
+### Signs You Need to Scale
+
+You should consider scaling your deployment if you notice:
+
+- delayed alert generation  
+- high CPU usage on the Manager  
+- slow queries in the Dashboard  
+- event queue buildup or dropped events  
+
+---
+
+### Key Insight
+
+Scaling in Wazuh is not triggered by the number of agents alone.
+
+It is driven by:
+
+- event volume (EPS)  
+- log verbosity  
+- detection complexity  
+
+Understanding this helps you avoid underestimating infrastructure requirements.
+
+---
+
 ## 6. Choosing the Learning Path
 
 At this point, we have covered:
