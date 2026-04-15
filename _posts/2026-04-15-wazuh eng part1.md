@@ -759,7 +759,7 @@ as the environment grows in scale and complexity.
 ---
 ---
 
-## 5.5 Event Volume (EPS) and Scaling Considerations
+### 5.5 Event Volume (EPS) and Scaling Considerations
 
 One of the most important factors when designing a Wazuh deployment is the event rate, measured as Events Per Second (EPS).
 
