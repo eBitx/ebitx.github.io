@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-sec450" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent-sec450" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="200" rx="12" fill="url(#bg-sec450)" stroke="#2563eb" stroke-width="2" stroke-opacity="0.4"/>
+  <rect x="10" y="10" width="280" height="180" rx="8" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.1"/>
+  <!-- SANS Badge Icon -->
+  <polygon points="150,45 180,62 180,98 150,115 120,98 120,62" fill="url(#accent-sec450)"/>
+  <text x="150" y="85" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="13" fill="#ffffff" text-anchor="middle">SANS</text>
+  <!-- Text -->
+  <text x="150" y="155" font-family="'Segoe UI', Roboto, sans-serif" font-weight="bold" font-size="14" fill="#ffffff" text-anchor="middle">SANS SEC 450</text>
+  <text x="150" y="175" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#93c5fd" text-anchor="middle">Blue Team Operations · NetRiders</text>
+</svg>

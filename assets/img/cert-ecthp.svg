@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-ecthp" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent-ecthp" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5a623"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="200" rx="12" fill="url(#bg-ecthp)" stroke="#f5a623" stroke-width="2" stroke-dasharray="6,4"/>
+  <rect x="10" y="10" width="280" height="180" rx="8" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.1"/>
+  <!-- Radar/Search Icon -->
+  <circle cx="150" cy="85" r="35" fill="url(#accent-ecthp)"/>
+  <circle cx="145" cy="80" r="14" fill="none" stroke="#ffffff" stroke-width="3"/>
+  <line x1="155" y1="90" x2="166" y2="101" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+  <!-- Text -->
+  <text x="150" y="155" font-family="'Segoe UI', Roboto, sans-serif" font-weight="bold" font-size="14" fill="#ffffff" text-anchor="middle">eCTHP v3 (IN PROGRESS)</text>
+  <text x="150" y="175" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#fde68a" text-anchor="middle">Threat Hunting · INE</text>
+</svg>

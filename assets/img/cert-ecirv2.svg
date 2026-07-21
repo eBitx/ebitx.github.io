@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff5722"/>
+      <stop offset="100%" stop-color="#e64a19"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="200" rx="12" fill="url(#bg)" stroke="#ff5722" stroke-width="2" stroke-opacity="0.4"/>
+  <rect x="10" y="10" width="280" height="180" rx="8" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.1"/>
+  <!-- Shield Icon -->
+  <path d="M150 35 L190 55 V95 C190 125 150 145 150 145 C150 145 110 125 110 95 V55 Z" fill="url(#accent)"/>
+  <path d="M140 85 L148 93 L162 75" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Text -->
+  <text x="150" y="168" font-family="'Segoe UI', Roboto, sans-serif" font-weight="bold" font-size="14" fill="#ffffff" text-anchor="middle">eCIRv2 CERTIFIED</text>
+  <text x="150" y="185" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#ffab91" text-anchor="middle">Incident Responder · INE</text>
+</svg>

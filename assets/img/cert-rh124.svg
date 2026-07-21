@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-rh" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent-rh" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ee0000"/>
+      <stop offset="100%" stop-color="#aa0000"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="200" rx="12" fill="url(#bg-rh)" stroke="#ee0000" stroke-width="2" stroke-opacity="0.4"/>
+  <rect x="10" y="10" width="280" height="180" rx="8" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.1"/>
+  <!-- Red Hat Icon -->
+  <circle cx="150" cy="80" r="35" fill="url(#accent-rh)"/>
+  <text x="150" y="86" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="14" fill="#ffffff" text-anchor="middle">RED HAT</text>
+  <!-- Text -->
+  <text x="150" y="155" font-family="'Segoe UI', Roboto, sans-serif" font-weight="bold" font-size="14" fill="#ffffff" text-anchor="middle">RH124 Linux Admin</text>
+  <text x="150" y="175" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#fecdd3" text-anchor="middle">Red Hat · Maharah Tech</text>
+</svg>
