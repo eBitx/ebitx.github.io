@@ -163,7 +163,9 @@ Information Security Analyst with hands-on experience across SOC operations incl
       <div class="cert-issuer">INE</div>
     </div>
     <div class="cert-action">
-      <span class="cert-status pending">In Progress</span>
+      <a href="https://certs.ine.com/55199828-264b-4e47-ad1b-82bf2465b53d#acc.AqPxW0hV" target="_blank" class="cert-btn verify">
+        Verify Certificate
+      </a>
     </div>
   </div>
 
