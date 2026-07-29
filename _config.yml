@@ -16,7 +16,7 @@ timezone:
 
 title: Ebrahim Ezzat # the main title
 
-tagline: SOC Analyst | DFIR # it will display as the subtitle
+tagline: Information Security Analyst # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   A personal blog for publishing CTF writeups, security insights, and technical notes.
